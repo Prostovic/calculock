@@ -9,14 +9,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class ResultDialog extends DialogFragment implements OnClickListener {
 	  final String LOG_TAG = "ResultDialog";
+	  public String sText = "";
 
 	  public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	      Bundle savedInstanceState) {
 	    getDialog().setTitle(getResources().getText(R.string.resultTitle));
 	    View v = inflater.inflate(R.layout.resultdialog, null);
+	    ((TextView) v.findViewById(R.id.resultDialogTextView)).setText(sText);
 	    v.findViewById(R.id.btnYes).setOnClickListener(this);
 	    v.findViewById(R.id.btnNo).setOnClickListener(this);
 	    v.findViewById(R.id.btnMaybe).setOnClickListener(this);

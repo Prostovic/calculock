@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
 	private int nResult = 0,
 	            countR = 0,
 	            countW = 0,
-	            nMaxPrimer = 5,
+	            nMaxPrimer = 3,
 	            nCouPrimer = 0;
 	private long tStart = 0L;
 
@@ -32,7 +32,6 @@ public class MainActivity extends Activity {
 	View oView;
 	TextView oTime, oResult;
 	LinearLayout lAnswer;
-//	DialogFragment dlg1;
 	final String LOG_TAG = "MainActivity";
 
     Handler timerHandler = new Handler();
@@ -54,12 +53,12 @@ public class MainActivity extends Activity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i(LOG_TAG, "onCreate()");
+//		Log.i(LOG_TAG, "onCreate()");
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		Log.i(LOG_TAG, "onCreate(): 1");
+//		Log.i(LOG_TAG, "onCreate(): 1");
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -84,18 +83,8 @@ public class MainActivity extends Activity {
 				outResult();
 			}
 		};
-		Log.i(LOG_TAG, "onCreate(): 2");
-		oView = getFragmentManager().findFragmentById(R.id.container).getView(); 
-		Log.i(LOG_TAG, "onCreate(): 201");
-		oTime = (TextView) oView.findViewById(R.id.textTime);
-		Log.i(LOG_TAG, "onCreate(): 202");
-		oResult = (TextView) oView.findViewById(R.id.textResult);
-		Log.i(LOG_TAG, "onCreate(): 203");
-		lAnswer = (LinearLayout) oView.findViewById(R.id.answer);
-		Log.i(LOG_TAG, "onCreate(): 22");
+//		Log.i(LOG_TAG, "onCreate(): 2");
 
-//		dlg1 = new ResultDialog();
-		Log.i(LOG_TAG, "onCreate(): finish");
 	}
 
 	@Override
@@ -110,6 +99,17 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		Log.i(LOG_TAG, "onResume()");
 		super.onResume();
+
+		Fragment oFr = getFragmentManager().findFragmentById(R.id.container); 
+		Log.i(LOG_TAG, "onCreate(): 200");
+		oView = oFr.getView(); 
+		Log.i(LOG_TAG, "onCreate(): 201");
+		oTime = (TextView) oView.findViewById(R.id.textTime);
+		Log.i(LOG_TAG, "onCreate(): 202");
+		oResult = (TextView) oView.findViewById(R.id.textResult);
+		Log.i(LOG_TAG, "onCreate(): 203");
+		lAnswer = (LinearLayout) oView.findViewById(R.id.answer);
+		Log.i(LOG_TAG, "onCreate(): 22");
 		startNewTest();
 	}
 
@@ -136,16 +136,20 @@ public class MainActivity extends Activity {
 
 	public void showItog() {
 		long nTime = stopTimer(),
-			     dt = (nTime - tStart) / 1000,
-			     nMin = dt / 60,
-			     nSec = dt % 60;
+		     dt = nTime / 1000,
+		     nMin = dt / 60,
+		     nSec = dt % 60;
+		Log.i(LOG_TAG, nTime + "-" + tStart + " = " + dt);
 		String sRes = String.format("%02d:%02d", nMin, nSec);
 		sRes = getResources().getString(R.string.resultTime) + ": " + sRes;
 		sRes += " " + getResources().getString(R.string.resultOk) + ": " + countR;
 		sRes += " " + getResources().getString(R.string.resultWrong) + ": " + countW;
 		Log.i(LOG_TAG, sRes);
+		ResultDialog dlg1;
+		dlg1 = new ResultDialog();
+		dlg1.sText = sRes;
 //		((TextView) dlg1.getView().findViewById(R.id.resultDialogTextView)).setText(sRes);
-//		dlg1.show(getFragmentManager(), "tag");
+		dlg1.show(getFragmentManager(), "tag");
 	}
 
 	public void showPrimer() {
