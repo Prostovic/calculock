@@ -1,0 +1,23 @@
+<preference-headers
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <header android:fragment="ru.izcom.calculock.PreferenceOperateActivity$OptionsOperateFragment"
+            android:icon="@drawable/ic_settings_applications"
+            android:title="@string/paramOperate"
+            android:summary="@string/paramOperateSummary" />
+
+    <!-- header android:fragment="ru.izcom.calculock.PreferenceOperateActivity$OptionsNumberFragment"
+            android:icon="@drawable/ic_settings_display"
+            android:title="@string/paramNumbers"
+            android:summary="@string/paramNumbersSummary">
+        <extra android:name="someKey" android:value="someHeaderValue" />
+    </header -->
+
+    <!-- header android:icon="@drawable/ic_settings_display"
+            android:title="Intent"
+            android:summary="Launches an Intent.">
+        <intent android:action="android.intent.action.VIEW"
+                android:data="http://www.android.com" />
+    </header -->
+
+</preference-headers>

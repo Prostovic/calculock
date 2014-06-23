@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:key="sum"
+        android:summary="@string/paramAdd"
+        android:title="@string/paramAdd" >
+    </CheckBoxPreference>
+
+    <CheckBoxPreference
+        android:key="mul"
+        android:summary="@string/paramMul"
+        android:title="@string/paramMul" >
+    </CheckBoxPreference>
+    
+    <CheckBoxPreference
+        android:key="sub"
+        android:summary="@string/paramSub"
+        android:title="@string/paramSub" >
+    </CheckBoxPreference>
+    
+    <CheckBoxPreference
+        android:key="div"
+        android:summary="@string/paramDiv"
+        android:title="@string/paramDiv" >
+    </CheckBoxPreference>
+    
+</PreferenceScreen>

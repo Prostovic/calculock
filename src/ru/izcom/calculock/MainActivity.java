@@ -3,11 +3,10 @@ package ru.izcom.calculock;
 import java.util.Random;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,19 +20,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-	private int nResult = 0,
-	            countR = 0,
-	            countW = 0,
-	            nMaxPrimer = 3,
-	            nCouPrimer = 0;
+	private int nResult = 0,     // результат примера
+	            countR = 0,      // кол-во правильных ответов
+	            countW = 0,      // кол-во ошибок
+	            nMaxPrimer = 3,  // кол-во примеров в тесте
+	            nCouPrimer = 0;  // счетчик примеров
 	private long tStart = 0L;
 
-	OnClickListener getAnsver;
-	View oView;
-	TextView oTime, oResult;
-	TextView tvPrimer;
-	LinearLayout lAnswer;
-	Button bStart;
+	OnClickListener getAnsver;  // обработчик ответов
+	View oView;                 // view для фрагмента
+	TextView tvTime,            // text view для времени
+	         tvResult,          // text view для отображения правильных и неправильных ответов
+	         tvPrimer;          // text view для примера
+	LinearLayout lAnswer;       // для кнопок ответов
+	Button bStart;              // кнопка старта
 	final String LOG_TAG = "MainActivity";
 
     Handler timerHandler = new Handler();
@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
             int minutes = seconds / 60;
             seconds = seconds % 60;
 
-            oTime.setText(String.format("%02d:%02d", minutes, seconds));
+            tvTime.setText(String.format("%02d:%02d", minutes, seconds));
 
             timerHandler.postDelayed(this, 500);
         }
@@ -54,7 +54,6 @@ public class MainActivity extends Activity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i("MainActivity", "MainActivity::onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
@@ -69,47 +68,37 @@ public class MainActivity extends Activity {
 				int nVal = Integer.parseInt(((Button)v).getText().toString());
 				if( nVal == nResult ) {
 					countR++;
+					outResult(countR, countW);
 					if( nCouPrimer < nMaxPrimer ) {
 						showPrimer();
 					}
 					else {
 						showItog();
+						clearScreen();
 					}
 				}
 				else {
 					countW++;
+					outResult(countR, countW);
 				}
-				outResult(countR, countW);
 			}
 		};
-
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		MenuItem mi = menu.add(0, 1, 0, getResources().getString(R.string.action_operate));
+		mi.setIntent(new Intent(this, PreferenceOperateActivity.class));
+		return super.onCreateOptionsMenu(menu);
+//		getMenuInflater().inflate(R.menu.main, menu);
+//		return true;
 	}
 	
 	@Override
 	protected void onResume() {
-		Log.i(LOG_TAG, "onResume()");
 		super.onResume();
-
-		Fragment oFr = getFragmentManager().findFragmentById(R.id.container); 
-		oView = oFr.getView(); 
-		oTime = (TextView) oView.findViewById(R.id.textTime);
-		oResult = (TextView) oView.findViewById(R.id.textResult);
-		lAnswer = (LinearLayout) oView.findViewById(R.id.answer);
-		tvPrimer = (TextView) oView.findViewById(R.id.textPrimer);
-		bStart = (Button) oView.findViewById(R.id.btnStart);
-		bStart.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startNewTest();
-			}
-		});
+		setViewData();
 		clearScreen();
 	}
 
@@ -119,15 +108,46 @@ public class MainActivity extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
+		Boolean bDone = false;
+		switch (id) {
+			case R.id.action_numbers:
+				bDone = true;
+				break;
+	
+			case R.id.action_operate:
+				bDone = true;
+				break;
+	
+			default:
+				break;
 		}
-		return super.onOptionsItemSelected(item);
+		return bDone ? bDone : super.onOptionsItemSelected(item);
+	}
+	
+	public void setViewData() {
+		Fragment oFr = getFragmentManager().findFragmentById(R.id.container); 
+		oView = oFr.getView(); 
+		tvTime = (TextView) oView.findViewById(R.id.textTime);
+		tvResult = (TextView) oView.findViewById(R.id.textResult);
+		lAnswer = (LinearLayout) oView.findViewById(R.id.answer);
+		tvPrimer = (TextView) oView.findViewById(R.id.textPrimer);
+		bStart = (Button) oView.findViewById(R.id.btnStart);
+		bStart.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startNewTest();
+			}
+		});
+	}
+
+	private void outResult(int nR, int nW) {
+		tvResult.setText(String.format("%02d - %02d", nR, nW));
+//		Log.i(LOG_TAG, "outResult("+nR+", "+nW+")");
 	}
 
 	public void clearScreen() {
 		stopTimer();
-		oTime.setText(String.format("%02d:%02d", 0, 0));
+		tvTime.setText(String.format("%02d:%02d", 0, 0));
 		outResult(0, 0);
 		lAnswer.removeAllViews();
 		tvPrimer.setText("");
@@ -147,18 +167,17 @@ public class MainActivity extends Activity {
 		     dt = nTime / 1000,
 		     nMin = dt / 60,
 		     nSec = dt % 60;
-		Log.i(LOG_TAG, nTime + "-" + tStart + " = " + dt);
 		String sRes = String.format("%02d:%02d", nMin, nSec);
 		sRes = getResources().getString(R.string.resultTime) + ": " + sRes;
-		sRes += " " + getResources().getString(R.string.resultOk) + ": " + countR;
-		sRes += " " + getResources().getString(R.string.resultWrong) + ": " + countW;
-		Log.i(LOG_TAG, sRes);
+		sRes += ", " + getResources().getString(R.string.resultOk) + ": " + countR;
+		sRes += ", " + getResources().getString(R.string.resultWrong) + ": " + countW;
+		sRes += ". " + getResources().getString(R.string.resultMore) + "?";
+//		Log.i(LOG_TAG, sRes);
 		ResultDialog dlg1;
 		dlg1 = new ResultDialog();
 		dlg1.sText = sRes;
 		dlg1.show(getFragmentManager(), "tag");
 		bStart.setEnabled(true);
-		clearScreen();
 	}
 
 	public void showPrimer() {
@@ -211,17 +230,6 @@ public class MainActivity extends Activity {
 	    return randomNum;
 	}
 
-	private void outResult(int nR, int nW) {
-/*
-		long t = System.currentTimeMillis(),
-		     dt = Math.round((t - tStart) / 1000.0),
-		     nMin = dt / 60,
-		     nSec = dt % 60;
-		oTime.setText(String.format("%02d:%02d", nMin, nSec));
- */
-		oResult.setText(String.format("%02d - %02d", nR, nW));
-	}
-
 	private void ShuffleArray(int[] array)
 	{
 	    int index;
@@ -261,9 +269,9 @@ public class MainActivity extends Activity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
-			Log.i("PlaceholderFragment", "Fragment::onCreate");
 			return rootView;
 		}
+		
 	}
 
 }

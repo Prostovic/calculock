@@ -1,0 +1,67 @@
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- PreferenceCategory
+            android:title="@string/paramOperate">
+
+        <CheckBoxPreference
+                android:key="isAdd"
+                android:title="@string/paramAdd"
+                android:defaultValue="true"
+                android:summary="@string/paramAdd" />
+
+        <CheckBoxPreference
+                android:key="isMul"
+                android:title="@string/paramMul"
+                android:summary="@string/paramMul" />
+
+                <CheckBoxPreference
+                android:key="isSub"
+                android:title="@string/paramSub"
+                android:summary="@string/paramSub" />
+
+                <CheckBoxPreference
+                android:key="isDiv"
+                android:title="@string/paramDiv"
+                android:summary="@string/paramDiv" />
+
+        </PreferenceCategory -->
+
+    <PreferenceCategory
+            android:title="@string/paramNumbers">
+
+<MultiSelectListPreference
+        android:dialogTitle="@string/paramNumbersSummary"
+        android:key="aNumbers"
+        android:summary=""        
+        android:title="@string/paramNumbers"
+        android:entries="@array/digits_list_preference"
+        android:entryValues="@array/digitsvalues_list_preference"
+        android:defaultValue="@array/digitsdefault_array"
+        />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            android:title="@string/paramOperate">
+
+<MultiSelectListPreference
+        android:dialogTitle="@string/paramOperateSummary"
+        android:key="aOperate"
+        android:summary=""        
+        android:title="@string/paramOperate"
+        android:entries="@array/operate_list_names"
+        android:entryValues="@array/operate_list_values"
+        android:defaultValue="@array/operate_list_default"
+        />
+        
+        <!-- MultiSelectListPreference
+                android:key="listNumbers"
+                android:title="@string/paramNumbers"
+                android:entries="@array/digits_list_preference"
+                android:entryValues="@array/digitslues_list_preference"
+                android:summary="@string/paramNumbersSummary"
+                android:dialogTitle="@string/paramNumbersSummary" / -->
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

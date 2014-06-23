@@ -30,12 +30,12 @@
  android:layout_margin="10dp"
  android:text="@string/no">
 </Button>
-<Button style="?android:attr/buttonBarButtonStyle"
+<!-- Button style="?android:attr/buttonBarButtonStyle"
  android:id="@+id/btnMaybe"
  android:layout_width="wrap_content"
  android:layout_height="wrap_content"
  android:layout_margin="10dp"
  android:text="@string/maybe">
-</Button>
+</Button -->
 </LinearLayout>
 </LinearLayout>

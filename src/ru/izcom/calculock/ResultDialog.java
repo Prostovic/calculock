@@ -22,39 +22,24 @@ public class ResultDialog extends DialogFragment implements OnClickListener {
 	    ((TextView) v.findViewById(R.id.resultDialogTextView)).setText(sText);
 	    v.findViewById(R.id.btnYes).setOnClickListener(this);
 	    v.findViewById(R.id.btnNo).setOnClickListener(this);
-	    v.findViewById(R.id.btnMaybe).setOnClickListener(this);
 	    return v;
 	  }
 
 	  public void onClick(View v) {
 		int id = ((Button) v).getId(); 
-	    Log.d(LOG_TAG, "ResultDialog 1: " + id + " " + ((Button) v).getText());
 	    MainActivity oAct = (MainActivity) getActivity();
 	    switch (id) {
-		case R.id.btnYes:
-//			oAct.startNewTest();
-			break;
-
-		case R.id.btnNo:
-			oAct.finish();
-			break;
-
-		case R.id.btnMaybe:
-			break;
-
-		default:
-			break;
+			case R.id.btnYes:
+				break;
+	
+			case R.id.btnNo:
+				oAct.finish();
+				break;
+	
+			default:
+				break;
 		}
 	    dismiss();
 	  }
 
-	  public void onDismiss(DialogInterface dialog) {
-	    super.onDismiss(dialog);
-	    Log.d(LOG_TAG, "ResultDialog 1: onDismiss");
-	  }
-
-	  public void onCancel(DialogInterface dialog) {
-	    super.onCancel(dialog);
-	    Log.d(LOG_TAG, "ResultDialog 1: onCancel");
-	  }
 }

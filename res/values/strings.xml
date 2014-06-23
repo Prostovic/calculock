@@ -3,15 +3,25 @@
 
     <string name="app_name">calculock</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_numbers">Числа</string>
+    <string name="action_operate">Операции</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="maybe">Иногда</string>
     <string name="resultTitle">Результат</string>
     <string name="resultTime">Время</string>
-    <string name="resultOk">Правильно</string>
-    <string name="resultWrong">Ошибки</string>
+    <string name="resultOk">правильных ответов</string>
+    <string name="resultWrong">ошибок</string>
     <string name="startTest">Начать</string>
-    
-        
+    <string name="resultMore">Продолжить</string>
+
+    <string name="paramOperate">Операции</string>
+    <string name="paramOperateSummary">Настройки операций</string>
+    <string name="paramNumbers">Числа</string>
+    <string name="paramNumbersSummary">Настройки чисел</string>
+    <string name="paramAdd">Сумма</string>
+    <string name="paramMul">Умножение</string>
+    <string name="paramSub">Вычитание</string>
+    <string name="paramDiv">Деление</string>
+
 </resources>
