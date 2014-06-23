@@ -1,12 +1,17 @@
 package ru.izcom.calculock;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,7 +28,7 @@ public class MainActivity extends Activity {
 	private int nResult = 0,     // результат примера
 	            countR = 0,      // кол-во правильных ответов
 	            countW = 0,      // кол-во ошибок
-	            nMaxPrimer = 3,  // кол-во примеров в тесте
+	            nMaxPrimer = 30, // кол-во примеров в тесте
 	            nCouPrimer = 0;  // счетчик примеров
 	private long tStart = 0L;
 
@@ -35,6 +40,8 @@ public class MainActivity extends Activity {
 	LinearLayout lAnswer;       // для кнопок ответов
 	Button bStart;              // кнопка старта
 	final String LOG_TAG = "MainActivity";
+	List<Integer> aOp = new ArrayList<Integer>();
+	List<Integer> aNumb = new ArrayList<Integer>();
 
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
@@ -83,6 +90,7 @@ public class MainActivity extends Activity {
 				}
 			}
 		};
+		GetPreference();
 	}
 
 	@Override
@@ -140,7 +148,33 @@ public class MainActivity extends Activity {
 		});
 	}
 
-	private void outResult(int nR, int nW) {
+    private void GetPreference() {
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+    	String[] selOp = prefs.getStringSet("aOperate", null).toArray(new String[] {}),
+    	         selNum = prefs.getStringSet("aNumbers", null).toArray(new String[] {});
+    	int n;
+    	Log.i(LOG_TAG, "Pref: " + selOp.toString());
+    	aOp.clear();
+    	for(n = selOp.length - 1; n >=0; n--) {
+//    		Log.i(LOG_TAG, "Pref["+n+"]: " + selOp[n]);
+    		aOp.add(Integer.parseInt(selOp[n]));
+    	}
+    	if( aOp.size() == 0 ) {
+    		aOp.add(2);
+    	}
+
+    	aNumb.clear();
+    	for(n = selNum.length - 1; n >=0; n--) {
+//    		Log.i(LOG_TAG, "Pref num["+n+"]: " + selNum[n]);
+    		aNumb.add(Integer.parseInt(selNum[n]));
+    	}
+    	if( aNumb.size() == 0 ) {
+    		aNumb.add(9);
+    	}
+    }
+
+    private void outResult(int nR, int nW) {
 		tvResult.setText(String.format("%02d - %02d", nR, nW));
 //		Log.i(LOG_TAG, "outResult("+nR+", "+nW+")");
 	}
@@ -158,6 +192,7 @@ public class MainActivity extends Activity {
 		countW = 0;
 		nCouPrimer = 0;
 		bStart.setEnabled(false);
+		GetPreference();
 		startTimer();
 		showPrimer();
 	}
@@ -191,14 +226,48 @@ public class MainActivity extends Activity {
                 LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
 		param.setMargins(0, 0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()), 0);
 		
-		aResult[0] = v1 + v2;
+		int nKey = randInt(0, aNumb.size() - 1);
+		v1 = aNumb.get(nKey);
+		
+		int nOp = aOp.get(randInt(0, aOp.size() - 1)) - 1;
+		String sOp = "";
+		
+		switch (nOp) {
+		case 0:
+			aResult[0] = v1 + v2;
+			sOp = "+";
+			break;
+
+		case 1:
+			aResult[0] = v1 * v2;
+			sOp = "*";
+			break;
+
+		case 2:
+			aResult[0] = v1;
+			v1 = v1 + v2;
+			sOp = "-";
+			break;
+
+		case 3:
+//			aResult[0] = v1 / v2;
+			aResult[0] = v1;
+			v1 = v1 * v2;
+			sOp = "/";
+			break;
+
+		default:
+			break;
+		}
+//		Log.i(LOG_TAG, "nOp = " + nOp + " sOp = " + sOp);
+		
 		nResult = aResult[0];
 		for(int i = aResult.length - 1; i > 0; i--) {
 			n = randInt(1, 7);
-			aResult[i] = (aResult[0] > n) ? (aResult[0] - n) : (aResult[0] - n);  
+			aResult[i] = (aResult[0] > n) ? (aResult[0] - n) : (n - aResult[0]);  
 //			Log.i(LOG_TAG, "aResult["+i+"] = " + aResult[i]);
 		}
-		tvPrimer.setText(v1 + " + " + v2);
+		tvPrimer.setText(v1 + " " + sOp + " " + v2);
 		ShuffleArray(aResult);
 		lAnswer.removeAllViews();
 		for(int k : aResult) {
