@@ -11,5 +11,7 @@
     <string name="resultTime">Время</string>
     <string name="resultOk">Правильно</string>
     <string name="resultWrong">Ошибки</string>
+    <string name="startTest">Начать</string>
+    
         
 </resources>

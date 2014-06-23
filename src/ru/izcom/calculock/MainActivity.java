@@ -31,12 +31,13 @@ public class MainActivity extends Activity {
 	OnClickListener getAnsver;
 	View oView;
 	TextView oTime, oResult;
+	TextView tvPrimer;
 	LinearLayout lAnswer;
+	Button bStart;
 	final String LOG_TAG = "MainActivity";
 
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
-
         @Override
         public void run() {
             long millis = System.currentTimeMillis() - tStart;
@@ -53,12 +54,10 @@ public class MainActivity extends Activity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-//		Log.i(LOG_TAG, "onCreate()");
-
+		Log.i("MainActivity", "MainActivity::onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-//		Log.i(LOG_TAG, "onCreate(): 1");
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -80,16 +79,14 @@ public class MainActivity extends Activity {
 				else {
 					countW++;
 				}
-				outResult();
+				outResult(countR, countW);
 			}
 		};
-//		Log.i(LOG_TAG, "onCreate(): 2");
 
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
@@ -101,16 +98,19 @@ public class MainActivity extends Activity {
 		super.onResume();
 
 		Fragment oFr = getFragmentManager().findFragmentById(R.id.container); 
-		Log.i(LOG_TAG, "onCreate(): 200");
 		oView = oFr.getView(); 
-		Log.i(LOG_TAG, "onCreate(): 201");
 		oTime = (TextView) oView.findViewById(R.id.textTime);
-		Log.i(LOG_TAG, "onCreate(): 202");
 		oResult = (TextView) oView.findViewById(R.id.textResult);
-		Log.i(LOG_TAG, "onCreate(): 203");
 		lAnswer = (LinearLayout) oView.findViewById(R.id.answer);
-		Log.i(LOG_TAG, "onCreate(): 22");
-		startNewTest();
+		tvPrimer = (TextView) oView.findViewById(R.id.textPrimer);
+		bStart = (Button) oView.findViewById(R.id.btnStart);
+		bStart.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startNewTest();
+			}
+		});
+		clearScreen();
 	}
 
 	@Override
@@ -125,11 +125,19 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	public void clearScreen() {
+		stopTimer();
+		oTime.setText(String.format("%02d:%02d", 0, 0));
+		outResult(0, 0);
+		lAnswer.removeAllViews();
+		tvPrimer.setText("");
+	}
+	
 	public void startNewTest() {
-		super.onResume();
 		countR = 0;
 		countW = 0;
 		nCouPrimer = 0;
+		bStart.setEnabled(false);
 		startTimer();
 		showPrimer();
 	}
@@ -148,8 +156,9 @@ public class MainActivity extends Activity {
 		ResultDialog dlg1;
 		dlg1 = new ResultDialog();
 		dlg1.sText = sRes;
-//		((TextView) dlg1.getView().findViewById(R.id.resultDialogTextView)).setText(sRes);
 		dlg1.show(getFragmentManager(), "tag");
+		bStart.setEnabled(true);
+		clearScreen();
 	}
 
 	public void showPrimer() {
@@ -163,14 +172,12 @@ public class MainActivity extends Activity {
                 LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
 		param.setMargins(0, 0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()), 0);
 		
-		Fragment frag1 = getFragmentManager().findFragmentById(R.id.container);
-		TextView tvPrimer = (TextView) frag1.getView().findViewById(R.id.textPrimer);
 		aResult[0] = v1 + v2;
 		nResult = aResult[0];
 		for(int i = aResult.length - 1; i > 0; i--) {
 			n = randInt(1, 7);
 			aResult[i] = (aResult[0] > n) ? (aResult[0] - n) : (aResult[0] - n);  
-			Log.i(LOG_TAG, "aResult["+i+"] = " + aResult[i]);
+//			Log.i(LOG_TAG, "aResult["+i+"] = " + aResult[i]);
 		}
 		tvPrimer.setText(v1 + " + " + v2);
 		ShuffleArray(aResult);
@@ -180,13 +187,13 @@ public class MainActivity extends Activity {
 //			Button oButton = new Button(this, null, R.drawable.button_shape);
 //			android:background="@drawable/button_shape"
 			oButton.setText(k + "");
-			Log.i(LOG_TAG, "button = " + k);
+//			Log.i(LOG_TAG, "button = " + k);
 			oButton.setOnClickListener(getAnsver);
 			oButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_shape));
 			oButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
 			oButton.setLayoutParams(param);
 			lAnswer.addView(oButton);
-			Log.i(LOG_TAG, "button fin = " + k);
+//			Log.i(LOG_TAG, "button fin = " + k);
 		}
 		nCouPrimer++;
 	}
@@ -204,7 +211,7 @@ public class MainActivity extends Activity {
 	    return randomNum;
 	}
 
-	private void outResult() {
+	private void outResult(int nR, int nW) {
 /*
 		long t = System.currentTimeMillis(),
 		     dt = Math.round((t - tStart) / 1000.0),
@@ -212,7 +219,7 @@ public class MainActivity extends Activity {
 		     nSec = dt % 60;
 		oTime.setText(String.format("%02d:%02d", nMin, nSec));
  */
-		oResult.setText(String.format("%02d - %02d", countR, countW));
+		oResult.setText(String.format("%02d - %02d", nR, nW));
 	}
 
 	private void ShuffleArray(int[] array)
@@ -254,6 +261,7 @@ public class MainActivity extends Activity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
+			Log.i("PlaceholderFragment", "Fragment::onCreate");
 			return rootView;
 		}
 	}

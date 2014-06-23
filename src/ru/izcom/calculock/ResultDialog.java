@@ -32,7 +32,7 @@ public class ResultDialog extends DialogFragment implements OnClickListener {
 	    MainActivity oAct = (MainActivity) getActivity();
 	    switch (id) {
 		case R.id.btnYes:
-			oAct.startNewTest();
+//			oAct.startNewTest();
 			break;
 
 		case R.id.btnNo:
