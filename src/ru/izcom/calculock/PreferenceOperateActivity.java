@@ -12,15 +12,20 @@ public class PreferenceOperateActivity extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getFragmentManager().beginTransaction().replace(android.R.id.content,
+                new OptionsOperateFragment()).commit();
 //		addPreferencesFromResource(R.xml.operate);
 	}
 	
-	@Override
+/*
+	@Override(non-Javadoc)
+
 	public void onBuildHeaders(List<Header> target) {
 		loadHeadersFromResource(R.xml.options_headers, target);
 //		super.onBuildHeaders(target);
 	}
-
+ */
+	
     public static class OptionsOperateFragment extends PreferenceFragment {
     	public OptionsOperateFragment() {
 		}
